@@ -1,11 +1,11 @@
 <script>
-	import { User, pb } from "../../stores/user.store";
+	import { User } from "../../stores/user.store";
 
 	let email = $User.email;
 	let username = $User.username;
-	let avatar = $User.avatar;
-	let first_name = $User.first_name;
-	let last_name = $User.last_name;
+	let profile_picture = $User.profile_picture;
+	let first_name = $User.name.first;
+	let last_name = $User.name.last;
 	let password = "";
 	let old_password = "";
 
@@ -40,7 +40,7 @@
 		<form on:submit|preventDefault={updateUSer}>
             <div class="grid place-items-center">
                 <img
-                    src={$User.avatar}
+                    src={$User.profile_picture}
                     alt=""
                     width="256"
                     height="256"

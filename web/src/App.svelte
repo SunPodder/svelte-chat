@@ -1,9 +1,25 @@
 <script>
-	import Nav from "./lib/Nav.svelte";
-	import Authentication from "./lib/Authentication/Authentication.svelte";
+	import Nav from "./pages/Nav.svelte";
+	import Authentication from "./pages/Authentication/Authentication.svelte";
 	import { activeRoute } from "./stores/nav.store";
-	import Chat from "./lib/Chat/Chat.svelte";
+	import Chat from "./pages/Chat/Chat.svelte";
 	import { User } from "./stores/user.store";
+	import { onMount } from "svelte";
+	import { GET } from "./lib/fetch";
+
+	let isLoading = true;
+
+	onMount(async () => {
+		try {
+			const user = await GET("http://localhost:5000/me");
+			User.set(user);
+		} catch (error) {
+			
+		} finally {
+			isLoading = false;
+		}
+	});
+
 </script>
 
 <main class="dark:bg-slate-800 w-screen h-screen">
@@ -20,6 +36,8 @@
 			</div>
 			<!-- ads -->
 		</div>
+	{:else if isLoading}
+		Loading...
 	{:else}
 		<div class="w-full h-full grid place-items-center">
 			<Authentication />

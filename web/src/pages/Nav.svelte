@@ -9,7 +9,7 @@
 
 <nav class="h-screen w-full flex flex-col gap-6 items-center shadow-xl py-4">
 	<button on:click={() => activeRoute.set(Profile)}>
-		<img src={$User.avatar} alt="" />
+		<img src={$User.profile_picture} alt="" class="rounded-full"/>
 	</button>
 	<button on:click={() => activeRoute.set(Home)}>
 		<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 512 512"

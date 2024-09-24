@@ -1,27 +1,29 @@
-<script>
-	import { pb } from "../../stores/user.store";
+<script type="ts">
+	import { zLoginUser } from "../../../../common/zod_schema";
+	import {POST} from "../../lib/fetch";
+	import { User } from "../../stores/user.store";
+	let email = "";
+	let password = "";
+	let error = null;
 
-    let email = "";
-    let password = "";
-    let error = "";
+	async function login() {
+		try {
+			zLoginUser.parse({ email, password });
 
-    function login(){
-        if(email === "" || password === ""){
-            error = "Please enter a valid email and password";
-            return;
-        }
+			let user = await POST("http://localhost:5000/login", {
+				body: JSON.stringify({ email, password }),
+			});
 
-        pb.collection("users").authWithPassword(email, password);
-    }
+			User.set(user);
+		} catch (err) {
+			error = err.errors;
+			console.log(err.errors);
+		}
+	}
 </script>
 
 <div>
 	<form on:submit|preventDefault={login} class="p-8">
-		{#if error}
-			<div class="text-red-600 dark:text-red-500 mb-2">
-				{error}
-			</div>
-		{/if}
 		<div class="grid gap-8 mb-6 md:grid-cols-2">
 			<div>
 				<label
@@ -49,6 +51,13 @@
 					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 				/>
 			</div>
+			{#if error}
+				<div>
+					{#each error as err}
+						<p class="text-red-600 dark:text-red-500 mb-2">{err.message}</p>
+					{/each}
+				</div>
+			{/if}
 		</div>
 		<button
 			type="submit"

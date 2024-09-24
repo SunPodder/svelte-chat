@@ -1,5 +1,7 @@
 <script>
-	import { pb } from "../../stores/user.store";
+	import { zRegisterUser } from "../../../../common/zod_schema";
+	import {POST} from "../../lib/fetch";
+	import { User } from "../../stores/user.store";
 
 	let first_name = "";
 	let last_name = "";
@@ -11,41 +13,26 @@
 	let showTerms = true;
 
 	async function register() {
-		if (
-			first_name === "" ||
-			last_name === "" ||
-			username === "" ||
-			email === "" ||
-			password === ""
-		) {
-			error = "Please enter valid information";
-			return;
-		}
-
 		const data = {
-				first_name,
-				last_name,
-				username,
-				email,
-				password,
-				passwordConfirm: password,
-				emailVisibility: false,
-			};
+			name: {
+				first: first_name,
+				last: last_name,
+			},
+			username,
+			email,
+			password,
+		};
 
 		try {
-			const res = await pb.collection("users").create(data);
-			await pb.collection("users").authWithPassword(email, password);
-		} catch (err) {
-			/*
-			 * @typedef {Object} Error
-			 * @property {string} message
-			 * @property {Object} data
-			 */
-			let data = err.data.data || {};
+			zRegisterUser.parse(data);
 
-			Object.keys(data).forEach((key) => {
-				error += data[key].message;
+			const user = await POST("http://localhost:5000/register", {
+				body: JSON.stringify(data),
 			});
+			
+			User.set(user);
+		} catch (error) {
+			console.log(error);
 		}
 	}
 </script>
@@ -144,7 +131,8 @@
 						class="invisible absolute bottom-7 mb-3 w-80 rounded-md dark:bg-slate-700 px-4 py-2 text-sm text-black group-hover:visible"
 					>
 						<p class="leading-2 pb-2 pt-2 dark:text-white">
-							This is a demo project. Your data may deleted at any time.
+							This is a demo project. Your data may deleted at any
+							time.
 						</p>
 						<svg
 							class="absolute bottom-[-10px] z-10"
@@ -154,7 +142,10 @@
 							fill="white"
 							xmlns="http://www.w3.org/2000/svg"
 						>
-							<path d="M8 10L0 0L16 1.41326e-06L8 10Z" fill="rgb(51 65 85)" />
+							<path
+								d="M8 10L0 0L16 1.41326e-06L8 10Z"
+								fill="rgb(51 65 85)"
+							/>
 						</svg>
 					</div>
 					<span

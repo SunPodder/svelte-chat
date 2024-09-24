@@ -1,8 +1,7 @@
 <script>
 	import { User } from './../../stores/user.store.js';
 	import { get } from "svelte/store";
-	import { pb } from "../../stores/user.store";
-	import { selectedConversation } from "../../stores/message.store";
+	import { activeConversation } from "../../stores/message.store";
 	let inputImage = [];
 	let previewImage = [];
 	let inputText = null;
@@ -35,10 +34,10 @@
 			formData.append("attachments", inputImage[i]);
 		}
 		formData.append("content", inputText);
-		formData.append("conversation", $selectedConversation.id);
+		formData.append("conversation", $activeConversation.id);
 		formData.append("sender", $User.id);
 
-		await pb.collection("messages").create(formData);
+		// await pb.collection("messages").create(formData);
 	}
 </script>
 

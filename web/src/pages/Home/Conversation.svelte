@@ -1,19 +1,20 @@
 <script>
-	import { selectedConversation } from './../../stores/message.store.js';
-	import { User, pb } from "../../stores/user.store";
+	import { activeConversation } from './../../stores/message.store.js';
+	import { User } from "../../stores/user.store";
 
 	export let conversation;
 	$: recipient = conversation.recipient;
+
 </script>
 
 <div class="flex mt-8 px-6 py-2 gap-6 hover:bg-slate-700"
 	role="button" tabindex="0"
 	on:keydown={(e) => {
 		if (e.key == "Enter") {
-			selectedConversation.set(conversation.id);
+			activeConversation.set(conversation.id);
 		}
 	}}
-	on:click={() => selectedConversation.set(conversation)}>
+	on:click={() => activeConversation.set(conversation)}>
 	<div>
 		<img src={recipient.avatar} alt="" width="52" height="52" class="rounded-full" />
 	</div>
